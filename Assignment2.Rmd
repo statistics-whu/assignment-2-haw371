@@ -1,0 +1,466 @@
+---
+title: "assignment2"
+author: "wanghaochong"
+date: "2024-11-15"
+
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Question1 A
+#Compute the minimum and the maximum number of viewers.
+q1_data = read.csv("BigBangTheory.csv")
+q1_data
+
+min_viewer = min(q1_data$Viewers..millions.)
+max_viewer = max(q1_data$Viewers..millions.)
+
+print("The maximum number of viewers is:")  
+max_viewer
+
+print("The minimum number of viewers is:") 
+min_viewer
+```
+
+
+```{r}
+#Question1 B
+#Compute the mean, median, and mode.
+mean_viewer = mean(q1_data$Viewers..millions.)
+median_viewer = median(q1_data$Viewers..millions.)
+mode_viewer = which.max(q1_data$Viewers..millions.)
+
+print("The mean number of viewers is:")  
+mean_viewer
+
+print("The median number of viewers is:") 
+median_viewer
+
+print("The mode number of viewers is:") 
+mode_viewer
+```
+
+```{r}
+#Question1 C
+#Compute the first and third quartiles.
+first_quartiles = quantile(q1_data$Viewers..millions., probs = 0.25)
+third_quartiles = quantile(q1_data$Viewers..millions., probs = 0.75)
+
+print("The first quartiles of viewers is:") 
+first_quartiles
+
+print("The third quartiles of viewers is:") 
+third_quartiles
+
+```
+
+```{r}
+#Question1 D
+#has viewership grown or declined over the 2011–2012 season? Discuss.
+
+
+```
+
+```{r}
+#Question2 A
+#Show the frequency distribution.
+q2_data = read.csv("NBAPlayerPts.csv")
+
+frq = table(q2_data$PPG)
+frq
+# 绘制直方图
+hist(q2_data$PPG, breaks = 5, main = "Frequency Distribution", xlab = "Points", ylab = "Frequency")
+
+```
+
+
+```{r}
+#Question2 B
+#Show the relative frequency distribution.
+relative_freq = prop.table(frq)
+relative_freq
+
+```
+
+```{r}
+#Question2 C
+#Show the cumulative percent frequency distribution.
+# 计算累积相对频率
+cumulative_freq <- cumsum(relative_freq)
+
+print(cumulative_freq)
+
+```
+
+```{r}
+#Question2 D
+#Develop a histogram for the average number of points scored per game.
+hist(q2_data$PPG, main = "Avg points of per game", xlab = "points", ylab = "Freq")
+
+
+```
+
+
+```{r}
+#Question2 E
+#Do the data appear to be skewed
+#它看起来是向右倾斜的，因为它有一条向右的长尾巴。
+```
+
+
+```{r}
+#Question2 F
+#What percentage of the players averaged at least 20 points per game
+total_player = length(q2_data$Player)
+
+at_least_20 = sum(q2_data$PPG>=20)
+
+percent_of_20 = at_least_20/total_player*100
+print(paste0("The percentage of the players averaged at least 20 points per game is : ",  percent_of_20,  "%" ))
+```
+
+```{r}
+#Question3 A
+#How large was the sample used in this survey
+#SE = 20， population standard deviation = 500
+# n = 500/20^2 = 625
+SE = 20
+sigma = 500
+n = (sigma / SE)^2
+n
+
+```
+
+```{r}
+#Question3 B
+#What is the probability that the point estimate was within ±25 of the population mean?
+p = pnorm(1.25) - pnorm(-1.25)
+p
+
+```
+
+```{r}
+#Question4 A
+#Develop appropriate descriptive statistics to summarize the data.
+q4_data = read.csv("Professional.csv")
+summary(q4_data$Age)
+mean_age = mean(q4_data$Age)
+min_age = min(q4_data$Age)
+max_age = max(q4_data$Age)
+sd_age = sd(q4_data$Age)
+
+table_gender = table(q4_data$Gender)
+props_gender = prop.table(table_gender)
+props_gender
+
+hist(q4_data$Age, main = "Histogram of Age", xlab = "Age")
+
+```
+
+
+```{r}
+#Question4 B
+se_age = sd_age/sqrt(length(q4_data$Age))
+lower_age = mean_age - 1.96*se_age
+upper_age = mean_age + 1.96*se_age
+print(paste0("The 95% confidence interval for age is(",  lower_age,",",  upper_age,")" ))
+
+mean_income = mean(q4_data$Household.Income)
+se_income = sd(q4_data$Household.Income)/sqrt(length(q4_data$Household.Income))
+lower_income = mean_income - 1.96*se_income
+upper_income = mean_income + 1.96*se_income
+print(paste0("The 95% confidence interval for household income is(",  lower_income,",", upper_income,")"))
+```
+
+```{r}
+#Question4 C
+n_broadband = sum(q4_data$Broadband.Access. == "Yes")
+prop_broad = n_broadband/length(q4_data$Broadband.Access.)
+prop_broad
+
+n_children = sum(q4_data$Have.Children. == "Yes")
+prop_children = n_children/length(q4_data$Have.Children.)
+prop_children
+
+se_broadband = sqrt(prop_broad * (1 - prop_broad)/length(q4_data$Broadband.Access.))
+se_broadband
+
+se_children = sqrt(prop_children * (1 - prop_children)/length(q4_data$Have.Children.))
+se_children
+
+lower_broadband = prop_broad - 1.96 * se_broadband
+upper_broadband = prop_broad + 1.96 * se_broadband
+print(paste0("The 95% confidence interval for the proportion of subscribers with broadband access is (",  lower_broadband,",",  upper_broadband,")" ))
+
+lower_children <- prop_children - 1.96 * se_children
+upper_children <- prop_children + 1.96 * se_children
+print(paste0("The 95% confidence interval for the proportion of subscribers  with children is (",  lower_children,",",  upper_children,")" ))
+```
+
+```{r}
+#Question4 D
+mean_invest = mean(q4_data$Value.of.Investments....)
+if(mean_invest > mean_income & mean_income > 70000){
+  print("Young Professional would be a good advertising outlet")
+}else{
+  print("Young Professional is not a good advertising outlet")
+}
+```
+
+```{r}
+#Question4 E
+if(prop_children > 0.5) {
+  print("对于销售幼儿教育软件和电脑游戏的公司来说，这本杂志可能是一个做广告的好地方，因为有超过一半的订阅者有子女。")
+} else {
+  print("对于销售幼儿教育软件和电脑游戏的公司来说，这本杂志可能不是一个理想的广告投放地方，因为有子女的订阅者比例相对较低。")
+}
+```
+
+
+```{r}
+#Question4 F
+mean_age
+mean_invest
+mean_income
+#从以上数据中可以看出《青年专业人士》杂志读者大多在30岁左右，
+#大部分事业有成，支出和收入客观
+#他们可能会对投资与理财，生活方式与健康的文章内容更感兴趣
+```
+
+```{r}
+#Question5 A
+#Conduct a hypothesis test for each sample at the .01 level of significance and determine what action, if any, should be taken. Provide the p-value for each test.
+
+#原假设H0:The process mean is equal to the specified mean of 12, 
+#The alternative hypothes is H1:The process mean is not equal to 12
+q5_data = read.csv("Quality.csv")
+sigma = 0.21
+n = 30
+alpha = 0.01
+mu = 12
+mean_1 = mean(q5_data$Sample.1)
+mean_2 = mean(q5_data$Sample.2)
+mean_3 = mean(q5_data$Sample.3)
+mean_4 = mean(q5_data$Sample.4)
+z1 = (mean_1 - mu)/(sigma/sqrt(n))
+z2 = (mean_2 - mu)/(sigma/sqrt(n))
+z3 = (mean_3 - mu)/(sigma/sqrt(n))
+z4 = (mean_4 - mu)/(sigma/sqrt(n))
+p1 = 2*(1 - pnorm(abs(z1)))
+p2 = 2*(1 - pnorm(abs(z2)))
+p3 = 2*(1 - pnorm(abs(z3)))
+p4 = 2*(1 - pnorm(abs(z4)))
+
+print(paste0("The sample 1 p-value is ", p1, ". Large than sg, Fail to reject H0" ))
+print(paste0("The sample 2 p-value is ", p2, ". Large than sg, Fail to reject H0" ))
+print(paste0("The sample 3 p-value is ", p3, ". Small than sg, reject H0" ))
+print(paste0("The sample 4 p-value is ", p4, ". Small than sg, reject H0" ))
+```
+
+```{r}
+#Question5 B
+sample_sd = apply(q5_data, 2, sd)
+sample_sd
+#四个样本的标准差接近于0.21，假设值合理
+```
+
+
+
+```{r}
+#Question5 C
+z = qnorm(1 - alpha/2)
+LCL = round(mu - z * sigma / sqrt(n), 2)
+UCL = round(mu + z * sigma / sqrt(n), 2)
+
+control_limits = c(LCL, UCL)
+control_limits
+
+```
+
+
+```{r}
+#Question5 D
+#讨论将显著性水平改为更大值的影响。如果提高显著性水平，可能会增加什么错误或失误？
+#提高显著性水平可能会增加拒绝原假设的概率，从而导致不必要的行动措施
+```
+
+```{r}
+#Question 6 A
+#估计2007年3月第一周和2008年3月第一周出租单元的比例。
+q6_data = read.csv("Occupancy.csv", header = FALSE)
+summary(q6_data)
+prop_2007 = sum(q6_data$V1 == "Yes")/ length(q6_data$V1)
+prop_2008 = sum(q6_data$V2 == "Yes")/ 150
+prop_2007
+prop_2008
+```
+
+```{r}
+#Question 6 B
+#为比例差异提供一个95%的置信区间
+prop.test(x = c(sum(q6_data$V1 == "Yes"), sum(q6_data$V2 == "Yes")), n = c(200, 150), conf.level = 0.95 )
+```
+
+```{r}
+#Question 6 C
+#基于发现评估2008年3月租金上涨情况
+#置信区间的上限约为-0.007，且区间范围内不包括0，所以2008年的租金会比2007年有所上升
+```
+
+```{r}
+#Question 7 A
+q7_data = read.csv("Training.csv")
+current = q7_data$Current
+proposed = q7_data$Proposed
+summary(current)
+summary(proposed)
+
+#从均值来看两种方式差异不大，提议的方法率高于当前方法
+#从标准差来看，提议的方法标准误差较小，其数据分布更为集中
+#两种方法在训练上表现出一定的相似性，但提议方法的数据分布更为集中，可能具有更高的稳定性。
+```
+```{r}
+#Question 7 B
+t_test_result = t.test(current, proposed)
+t_test_result
+#通过数据分析，可以观察到两种方法在训练时间上的总体均值略有不同，但差异并不大。
+#这种差异不足以成为唯一依据来证明哪种方式更优于另一种，因此需要考虑更多方面的因素
+```
+
+
+```{r}
+#Question 7 c
+sd_current = sd(current)
+sd_proposed = sd(proposed)
+sd_proposed
+sd_current
+var.test(current, proposed)
+var.test
+#样本current的方差  大约是样本proposed方差的2.477296倍
+```
+
+```{r}
+#Question 7 D
+#关于这两种方法之间的任何差异，你能得出什么结论？你的建议是什么？请解释。
+#两种方法在训练上表现出一定的相似性，但提议方法的数据分布更为集中，可能具有更高的稳定性。
+```
+
+```{r}
+#Question 7 E
+#建议其他可能需要的数据或测试
+#实际教学效果还需考虑其他因素，如学生的掌握程度、教学资源的利用效率等
+#测试两种方法对学生学习的影响
+#比较两种教学方式的教学成本
+```
+
+```{r}
+#Question 8 A
+library(ggplot2)
+q8_data = read.csv("Camry.csv")
+miles = q8_data$Miles..1000s.
+prices = q8_data$Price...1000s.
+ggplot(data = q8_data, aes(x = miles, y = prices)) +
+  geom_point() +
+  labs(x = "Mileage", y = "Price")
+```
+
+
+```{r}
+#Question 8 B
+#第（a）部分中绘制的散点图表明了两个变量的关系
+#随着公里数的增长，车的价格随之有下降的趋势
+```
+
+
+```{r}
+#Question 8 C
+#开发可用于预测价格（1000美元）的估计回归方程给定英里（1000）。
+summary(q8_data)
+model_q8 = lm(prices ~ miles, data = q8_data)
+summary(model_q8)
+predicted_price <- predict(model_q8, newdata = q8_data)
+print(predicted_price)
+#Prices = 16.470 - 0.059*Mileages
+```
+
+
+```{r}
+#Question 8 D
+#在0.05的显著性水平上检验显著性关系。
+result = cor.test(miles, prices, method = 'pearson', conf.level = 0.95)
+result
+#p-value = 0.0003475 < 0.05
+```
+
+
+```{r}
+#Question 8 E
+#估计的回归方程是否提供了很好的拟合？解释一下。
+#Multiple R-squared:  0.5387，
+#因为汽车行驶公里数是一个很好决定汽车价格的因素，所以它提供了一个很好的拟合
+
+```
+
+
+```{r}
+#Question 8 F
+#对估计回归方程的斜率进行解释。
+#汽车每多行驶1000英里数，车价就会下降59美金
+```
+
+
+```{r}
+#Question 8 G
+price_1 = 16.470 - 0.059*60
+price_1
+#根据公式的预测价格应该是在12.93左右，这个价格不一定是你的卖价，但是是一个参考的依据
+```
+
+
+```{r}
+#Question 9 A
+library(readxl)
+q9_data = readxl::read_xlsx("WE.xlsx") %>% 
+  set_names("id","churn","happy_index","chg_hi","support","chg_supprt",
+            "priority","chg_priority","log_in_fre","chg_blog_fre","chg_vis","y_age","chg_interval")
+glimpse(q9_data)
+
+
+```
+
+
+```{r}
+#Question 9 B
+q9_data %>% 
+  select(-id) %>% 
+  group_by(churn)
+
+```
+
+```{r}
+#Question 9 C
+q9_model <- glm(churn ~ chg_blog_fre + chg_hi + chg_interval + chg_vis + happy_index
+              + log_in_fre + priority  + support + y_age,
+             data = q9_data, 
+             family = binomial(link = "logit"))
+# Print a summary of the regression model
+summary(q9_model)
+vif(q9_model)
+```
+
+```{r}
+#Question 9 D
+q9_data %>% 
+  add_predictions(q9_model,type = "response") %>% 
+  arrange(desc(pred)) %>% 
+  filter(churn == 1) %>% 
+  slice_head(n=30) %>%
+  kable() %>% kable_styling()
+```
