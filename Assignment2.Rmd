@@ -10,6 +10,17 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
+library(kableExtra) 
+library(broom)
+library(modelr)
+library(stats)
+library(lubridate)
+library(infer)
+library(kableExtra)
+library(scales)
+library(car) 
 ```
 
 
@@ -446,11 +457,11 @@ q9_data %>%
 
 ```{r}
 #Question 9 C
-q9_model <- glm(churn ~ chg_blog_fre + chg_hi + chg_interval + chg_vis + happy_index
+q9_model = glm(churn ~ chg_blog_fre + chg_hi + chg_interval + chg_vis + happy_index
               + log_in_fre + priority  + support + y_age,
              data = q9_data, 
              family = binomial(link = "logit"))
-# Print a summary of the regression model
+
 summary(q9_model)
 vif(q9_model)
 ```
